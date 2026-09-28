@@ -75,7 +75,7 @@ async function dcOfficialListCardSystem(scope, tab, defaultName) {
   const manifestUrl = assetBaseUrl + "/assets/official-random-cards.json";
   let data = null;
   try {
-    const response = await new Client({ persistentConnection: false, noProxy: true, timeout: 8, connectTimeout: 5 }).get(
+    const response = await new Client({ persistentConnection: false, timeout: 8, connectTimeout: 5 }).get(
       manifestUrl + "?card_manifest=" + Date.now(),
       { Accept: "application/json, text/plain, */*", Referer: assetBaseUrl + "/", "Cache-Control": "no-cache" }
     );
@@ -128,7 +128,7 @@ async function dcOfficialListCardSystem(scope, tab, defaultName) {
 async function dcOfficialEventCard() {
   const manifestUrl = "https://dc-toki-mangayomi-media.pages.dev/assets/official-event-card.json";
   try {
-    const response = await new Client({ persistentConnection: false, noProxy: true, timeout: 8, connectTimeout: 5 }).get(
+    const response = await new Client({ persistentConnection: false, timeout: 8, connectTimeout: 5 }).get(
       manifestUrl + "?event_manifest=" + Date.now(),
       { Accept: "application/json, text/plain, */*", Referer: "https://dc-toki-mangayomi-media.pages.dev/" }
     );
@@ -236,7 +236,7 @@ class DefaultExtension extends MProvider {
       try {
         const direct = this._driveDirect(source, false), join = direct.indexOf("?") >= 0 ? "&" : "?", requestUrl = direct + join + "card_json=" + Date.now();
         let body = "";
-        for (const options of [{ persistentConnection: false, noProxy: true, timeout: 15, connectTimeout: 8 }, { useDartHttpClient: true, persistentConnection: false }]) { try { const response = await new Client(options).get(requestUrl, { "Accept": "application/json", "Cache-Control": "no-cache" }); if (response.statusCode >= 200 && response.statusCode < 300) { body = response.body; break; } } catch (_) {} }
+        for (const options of [{ persistentConnection: false, timeout: 15, connectTimeout: 8 }, { useDartHttpClient: true, persistentConnection: false }]) { try { const response = await new Client(options).get(requestUrl, { "Accept": "application/json", "Cache-Control": "no-cache" }); if (response.statusCode >= 200 && response.statusCode < 300) { body = response.body; break; } } catch (_) {} }
         if (!body) throw new Error("커스텀 목록 카드 JSON을 불러오지 못했습니다.");
         data = JSON.parse(body); preferences.setString(cacheKey, JSON.stringify(data)); preferences.setString(sourceKey, source); preferences.setString(timeKey, String(Date.now()));
       } catch (_) { if (cached) { try { data = JSON.parse(cached); } catch (_) {} } }
@@ -420,6 +420,22 @@ class DefaultExtension extends MProvider {
   }
 
   async _getText(url, extraHeaders, stage) {
+    if (this._rabbitEnabled()) {
+      try {
+        const endpoint = this._rabbitEndpoint();
+        const proxyUrl = endpoint + "/api/proxy?url=" + encodeURIComponent(url);
+        const reqHeaders = {
+          "User-Agent": this.userAgent,
+          "Accept": "text/html,application/xhtml+xml,application/json;q=0.9,*/*;q=0.8",
+          "Referer": (this._origin(url) || this.fallbackBaseUrl) + "/"
+        };
+        if (extraHeaders) Object.assign(reqHeaders, extraHeaders);
+        const proxyRes = await new Client({ persistentConnection: false, timeout: 20 }).get(proxyUrl, reqHeaders);
+        if (proxyRes && proxyRes.statusCode >= 200 && proxyRes.statusCode < 300 && proxyRes.body && !this._isChallenge(proxyRes.body)) {
+          return proxyRes.body;
+        }
+      } catch (_) {}
+    }
     const headers = {
       "User-Agent": this.userAgent,
       "Accept": "text/html,application/xhtml+xml,application/json;q=0.9,*/*;q=0.8",
@@ -428,7 +444,7 @@ class DefaultExtension extends MProvider {
     if (extraHeaders) Object.assign(headers, extraHeaders);
     const failures = [];
     const transports = [
-      { name: "RHTTP", options: { persistentConnection: false, noProxy: true, timeout: 24, connectTimeout: 10 } },
+      { name: "RHTTP", options: { persistentConnection: false, timeout: 24, connectTimeout: 10 } },
       { name: "DART", options: { useDartHttpClient: true, persistentConnection: false } }
     ];
     for (const transport of transports) {
@@ -950,7 +966,7 @@ class DefaultExtension extends MProvider {
       "Range": "bytes=0-0"
     };
     const transports = [
-      { persistentConnection: false, noProxy: true, timeout: 7, connectTimeout: 4 },
+      { persistentConnection: false, timeout: 7, connectTimeout: 4 },
       { useDartHttpClient: true, persistentConnection: false, timeout: 7, connectTimeout: 4 }
     ];
     for (const options of transports) {

@@ -76,7 +76,7 @@ async function dcOfficialListCardSystem(scope, tab, defaultName) {
   const manifestUrl = assetBaseUrl + "/assets/official-random-cards.json";
   let data = null;
   try {
-    const response = await new Client({ persistentConnection: false, noProxy: true, timeout: 8, connectTimeout: 5 }).get(
+    const response = await new Client({ persistentConnection: false, timeout: 8, connectTimeout: 5 }).get(
       manifestUrl + "?card_manifest=" + Date.now(),
       { Accept: "application/json, text/plain, */*", Referer: assetBaseUrl + "/", "Cache-Control": "no-cache" }
     );
@@ -169,7 +169,7 @@ class DefaultExtension extends MProvider {
   async _freshDetailTitleLanguage() { if (typeof setTimeout === "function") await new Promise(function(resolve) { setTimeout(resolve, 250); }); return this._titleLanguage(); }
   _titleBridgeKey(value) { let text = this._text(value); try { text = text.normalize("NFKC"); } catch (_) {} return text.toLowerCase().replace(/[^a-z0-9가-힣ぁ-んァ-ヶ一-龯]+/g, ""); }
   _anissiaSearchNames(value) { const original = this._text(value).trim(), cleaned = original.replace(/\s*[\(\[]?\d{4}[\)\]]?\s*$/g, "").replace(/\s*[\(\[](더빙|자막|무삭제)[\)\]]\s*$/g, "").replace(/^\s*\((고화질|저화질)\)\s*/g, "").replace(/\s+BD\s*$/i, "").trim(), plain = cleaned.replace(/[~～!！「」『』…:：·・,]+/g, " ").replace(/\s+/g, " ").trim(), season = plain.replace(/시즌\s*(\d+)/g, "$1기"), numbered = season.replace(/\s+(\d+)$/g, " $1기"), korean = (season.match(/^[가-힣0-9][가-힣0-9\s:：\-·・~～!?！？'’.,]*/) || [""])[0].replace(/[\s:：\-·・~～!?！？'’.,]+$/g, "").trim(); return [original, cleaned, plain, season, numbered, korean].filter(function(item, index, list) { return item && list.indexOf(item) === index; }); }
-  async _anissiaMetadata(original) { const names = this._anissiaSearchNames(original); for (const query of names) { try { const response = await new Client({persistentConnection: false, noProxy: true, timeout: 7, connectTimeout: 4}).get("https://api.anissia.net/anime/list/0?q=" + encodeURIComponent(query), {Accept: "application/json", Referer: "https://anissia.net/anime"}); if (!response || response.statusCode < 200 || response.statusCode >= 300) continue; const payload = JSON.parse(this._text(response.body)), items = payload && payload.data && Array.isArray(payload.data.content) ? payload.data.content : [], wanted = this._titleBridgeKey(query), match = items.find((item) => this._titleBridgeKey(item && item.subject) === wanted); if (match && this._text(match.originalSubject).trim()) return {ko: original, ja: this._text(match.originalSubject).trim(), anissiaId: Number(match.animeNo) || 0, confidence: 500}; } catch (_) {} } return null; }
+  async _anissiaMetadata(original) { const names = this._anissiaSearchNames(original); for (const query of names) { try { const response = await new Client({persistentConnection: false, timeout: 7, connectTimeout: 4}).get("https://api.anissia.net/anime/list/0?q=" + encodeURIComponent(query), {Accept: "application/json", Referer: "https://anissia.net/anime"}); if (!response || response.statusCode < 200 || response.statusCode >= 300) continue; const payload = JSON.parse(this._text(response.body)), items = payload && payload.data && Array.isArray(payload.data.content) ? payload.data.content : [], wanted = this._titleBridgeKey(query), match = items.find((item) => this._titleBridgeKey(item && item.subject) === wanted); if (match && this._text(match.originalSubject).trim()) return {ko: original, ja: this._text(match.originalSubject).trim(), anissiaId: Number(match.animeNo) || 0, confidence: 500}; } catch (_) {} } return null; }
   _plainEnglishTitle(value) {
     const text = this._text(value).trim();
     return /[a-z]/i.test(text) && !/[가-힣ぁ-んァ-ヶ一-龯]/.test(text) ? text : "";
@@ -204,7 +204,7 @@ class DefaultExtension extends MProvider {
       const query = byId ? "query($id:Int!){Media(id:$id,type:ANIME){id synonyms title{romaji english native}}}" : "query($search:String!){Page(page:1,perPage:12){media(search:$search,type:ANIME){id synonyms title{romaji english native}}}}";
       const variables = byId ? {id: Number(anilistId)} : {search: this._text(candidate).trim()};
       if (!byId && !variables.search) return null;
-      const response = await new Client({persistentConnection: false, noProxy: true, timeout: 12, connectTimeout: 6}).post("https://graphql.anilist.co", {"Content-Type": "application/json", Accept: "application/json"}, JSON.stringify({query, variables}));
+      const response = await new Client({persistentConnection: false, timeout: 12, connectTimeout: 6}).post("https://graphql.anilist.co", {"Content-Type": "application/json", Accept: "application/json"}, JSON.stringify({query, variables}));
       if (!response || response.statusCode < 200 || response.statusCode >= 300) return null;
       const payload = JSON.parse(this._text(response.body));
       if (byId) return this._metadataFromAniListMedia(original, payload && payload.data && payload.data.Media);
@@ -223,7 +223,7 @@ class DefaultExtension extends MProvider {
   async _linkkfMetadata(original, url) {
     if (!/^https:\/\/(?:www\.)?linkkf\.(?:tv|com)\/ani\/\d+\/?/i.test(this._text(url).trim())) return null;
     try {
-      const response = await new Client({persistentConnection: false, noProxy: true, timeout: 10, connectTimeout: 6}).get(this._text(url).trim(), {Accept: "text/html,application/xhtml+xml", Referer: "https://linkkf.tv/"});
+      const response = await new Client({persistentConnection: false, timeout: 10, connectTimeout: 6}).get(this._text(url).trim(), {Accept: "text/html,application/xhtml+xml", Referer: "https://linkkf.tv/"});
       if (!response || response.statusCode < 200 || response.statusCode >= 300) return null;
       const body = this._text(response.body), id = this._anilistIdFromText(body);
       if (id) { const direct = await this._aniListMetadata(original, "", id); if (direct) return direct; }
@@ -239,7 +239,7 @@ class DefaultExtension extends MProvider {
     try {
       const base = await this._resolveBaseUrl();
       for (const query of this._anissiaSearchNames(name)) {
-        const response = await new Client({persistentConnection: false, noProxy: true, timeout: 10, connectTimeout: 6}).get(base + "/api/anime?page=1&limit=10&q=" + encodeURIComponent(query), {Accept: "application/json, text/plain, */*", Referer: base + "/"});
+        const response = await new Client({persistentConnection: false, timeout: 10, connectTimeout: 6}).get(base + "/api/anime?page=1&limit=10&q=" + encodeURIComponent(query), {Accept: "application/json, text/plain, */*", Referer: base + "/"});
         if (!response || response.statusCode < 200 || response.statusCode >= 300) continue;
         const data = JSON.parse(this._text(response.body)), items = Array.isArray(data && data.items) ? data.items : [], wanted = this._titleBridgeKey(query);
         const match = items.find((item) => this._titleBridgeKey(item && item.title) === wanted || this._titleBridgeKey(item && item.titleOriginal) === wanted);
@@ -296,7 +296,7 @@ class DefaultExtension extends MProvider {
   async _requestText(url, referer, timeout) {
     const headers = this.getHeaders(url);
     if (referer) headers.Referer = referer;
-    const response = await new Client({persistentConnection: false, noProxy: true, timeout: timeout || 10, connectTimeout: 6}).get(url, headers);
+    const response = await new Client({persistentConnection: false, timeout: timeout || 10, connectTimeout: 6}).get(url, headers);
     if (response.statusCode < 200 || response.statusCode >= 300) throw new Error("HTTP " + response.statusCode);
     return this._text(response.body);
   }

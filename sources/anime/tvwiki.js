@@ -64,7 +64,7 @@ async function dcTvwikiRemoteCard(tab, defaultName) {
   const manifestUrl = assetBaseUrl + "/assets/official-random-cards.json";
   let data = null;
   try {
-    const response = await new Client({ persistentConnection: false, noProxy: true, timeout: 8, connectTimeout: 5 }).get(
+    const response = await new Client({ persistentConnection: false, timeout: 8, connectTimeout: 5 }).get(
       manifestUrl + "?card_manifest=" + Date.now(),
       { Accept: "application/json, text/plain, */*", Referer: assetBaseUrl + "/", "Cache-Control": "no-cache" }
     );
@@ -101,7 +101,7 @@ async function dcTvwikiRemoteCard(tab, defaultName) {
 async function dcTvwikiEventCard() {
   const manifestUrl = "https://dc-toki-mangayomi-media.pages.dev/assets/official-event-card.json";
   try {
-    const response = await new Client({ persistentConnection: false, noProxy: true, timeout: 8, connectTimeout: 5 }).get(
+    const response = await new Client({ persistentConnection: false, timeout: 8, connectTimeout: 5 }).get(
       manifestUrl + "?event_manifest=" + Date.now(),
       { Accept: "application/json, text/plain, */*", Referer: "https://dc-toki-mangayomi-media.pages.dev/" }
     );
@@ -191,7 +191,7 @@ class DefaultExtension extends MProvider {
     if (!data) {
       try {
         const direct = this._driveDirect(source, false), join = direct.indexOf("?") >= 0 ? "&" : "?";
-        const response = await new Client({ persistentConnection: false, noProxy: true, timeout: 8, connectTimeout: 5 }).get(
+        const response = await new Client({ persistentConnection: false, timeout: 8, connectTimeout: 5 }).get(
           direct + join + "card_json=" + Date.now(),
           { Accept: "application/json, text/plain, */*", "Cache-Control": "no-cache" }
         );
@@ -250,7 +250,7 @@ class DefaultExtension extends MProvider {
   _cachedBaseUrl() { const cached = this._trimSlash(this._preference(this.cachedBaseKey, "")); return this._isAllowedBase(cached) ? cached : ""; }
   _headers(referer, accept) { const base = this._origin(referer) || this._manualBaseUrl() || this._cachedBaseUrl() || this.fallbackBaseUrl; return { "User-Agent": this.userAgent, "Accept": accept || "text/html,application/xhtml+xml,application/json;q=0.9,*/*;q=0.8", "Accept-Language": "ko-KR,ko;q=0.9,en;q=0.8", "Referer": referer || base + "/" }; }
   _client(kind, timeout) {
-    if (kind === "rhttp") return new Client({ persistentConnection: false, noProxy: true, timeout: timeout || 25, connectTimeout: 8 });
+    if (kind === "rhttp") return new Client({ persistentConnection: false, timeout: timeout || 25, connectTimeout: 8 });
     return new Client({ useDartHttpClient: true, persistentConnection: false, timeout: timeout || 25, connectTimeout: 8 });
   }
   _clientOrder() {

@@ -75,7 +75,7 @@ async function dcOfficialListCardSystem(scope, tab, defaultName) {
   const manifestUrl = assetBaseUrl + "/assets/official-random-cards.json";
   let data = null;
   try {
-    const response = await new Client({ persistentConnection: false, noProxy: true, timeout: 8, connectTimeout: 5 }).get(
+    const response = await new Client({ persistentConnection: false, timeout: 8, connectTimeout: 5 }).get(
       manifestUrl + "?card_manifest=" + Date.now(),
       { Accept: "application/json, text/plain, */*", Referer: assetBaseUrl + "/", "Cache-Control": "no-cache" }
     );
@@ -128,7 +128,7 @@ async function dcOfficialListCardSystem(scope, tab, defaultName) {
 async function dcOfficialEventCard() {
   const manifestUrl = "https://dc-toki-mangayomi-media.pages.dev/assets/official-event-card.json";
   try {
-    const response = await new Client({ persistentConnection: false, noProxy: true, timeout: 8, connectTimeout: 5 }).get(
+    const response = await new Client({ persistentConnection: false, timeout: 8, connectTimeout: 5 }).get(
       manifestUrl + "?event_manifest=" + Date.now(),
       { Accept: "application/json, text/plain, */*", Referer: "https://dc-toki-mangayomi-media.pages.dev/" }
     );
@@ -239,7 +239,7 @@ class DefaultExtension extends MProvider {
       try {
         const direct = this._driveDirect(source, false), join = direct.indexOf("?") >= 0 ? "&" : "?", requestUrl = direct + join + "card_json=" + Date.now();
         let body = "";
-        for (const options of [{ persistentConnection: false, noProxy: true, timeout: 15, connectTimeout: 8 }, { useDartHttpClient: true, persistentConnection: false }]) {
+        for (const options of [{ persistentConnection: false, timeout: 15, connectTimeout: 8 }, { useDartHttpClient: true, persistentConnection: false }]) {
           try { const response = await new Client(options).get(requestUrl, { "Accept": "application/json", "Cache-Control": "no-cache" }); if (response.statusCode >= 200 && response.statusCode < 300) { body = response.body; break; } } catch (_) {}
         }
         if (!body) throw new Error("커스텀 목록 카드 JSON을 불러오지 못했습니다.");
@@ -334,7 +334,7 @@ class DefaultExtension extends MProvider {
     const manual = this._text(this._preference("xtoon_domain_url", "")).trim();
     if (this._isAllowedBaseUrl(manual)) return this._trimSlash(manual);
     try {
-      const response = await new Client({ persistentConnection: false, noProxy: true, timeout: 8, connectTimeout: 5 }).get(this.signalUrl, {
+      const response = await new Client({ persistentConnection: false, timeout: 8, connectTimeout: 5 }).get(this.signalUrl, {
         "User-Agent": this.userAgent,
         "Accept": "application/json",
         "Cache-Control": "no-cache"

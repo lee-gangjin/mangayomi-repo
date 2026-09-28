@@ -75,7 +75,7 @@ async function dcOfficialListCardSystem(scope, tab, defaultName) {
   const manifestUrl = assetBaseUrl + "/assets/official-random-cards.json";
   let data = null;
   try {
-    const response = await new Client({ persistentConnection: false, noProxy: true, timeout: 8, connectTimeout: 5 }).get(
+    const response = await new Client({ persistentConnection: false, timeout: 8, connectTimeout: 5 }).get(
       manifestUrl + "?card_manifest=" + Date.now(),
       { Accept: "application/json, text/plain, */*", Referer: assetBaseUrl + "/", "Cache-Control": "no-cache" }
     );
@@ -128,7 +128,7 @@ async function dcOfficialListCardSystem(scope, tab, defaultName) {
 async function dcOfficialEventCard() {
   const manifestUrl = "https://dc-toki-mangayomi-media.pages.dev/assets/official-event-card.json";
   try {
-    const response = await new Client({ persistentConnection: false, noProxy: true, timeout: 8, connectTimeout: 5 }).get(
+    const response = await new Client({ persistentConnection: false, timeout: 8, connectTimeout: 5 }).get(
       manifestUrl + "?event_manifest=" + Date.now(),
       { Accept: "application/json, text/plain, */*", Referer: "https://dc-toki-mangayomi-media.pages.dev/" }
     );
@@ -222,7 +222,7 @@ class DefaultExtension extends MProvider {
     const cached = this.baseMemory[provider];
     if (cached && Date.now() - cached.at < 10 * 60 * 1000 && this._isAllowedBaseUrl(cached.base, provider)) return cached.base;
     try {
-      const response = await new Client({ persistentConnection: false, noProxy: true, timeout: 8, connectTimeout: 5 }).get(this.signalUrl, { "User-Agent": this.userAgent, "Accept": "application/json", "Cache-Control": "no-cache" });
+      const response = await new Client({ persistentConnection: false, timeout: 8, connectTimeout: 5 }).get(this.signalUrl, { "User-Agent": this.userAgent, "Accept": "application/json", "Cache-Control": "no-cache" });
       if (response.statusCode >= 200 && response.statusCode < 300) {
         const data = JSON.parse(response.body);
         const candidate = data && data.domains && data.domains[provider] ? data.domains[provider].baseUrl : "";
@@ -256,8 +256,24 @@ class DefaultExtension extends MProvider {
   async _pause(milliseconds) { if (typeof setTimeout === "function") await new Promise(function(resolve) { setTimeout(resolve, milliseconds); }); }
 
   async _requestText(method, url, extraHeaders, body, stage) {
+    if (this._rabbitEnabled()) {
+      try {
+        const endpoint = this._rabbitEndpoint();
+        const proxyUrl = endpoint + "/api/proxy?url=" + encodeURIComponent(url);
+        const reqHeaders = {
+          "Accept": "text/html,application/xhtml+xml,application/json;q=0.9,*/*;q=0.8",
+          "Referer": (this._origin(url) || this.fallbackBaseUrl) + "/"
+        };
+        if (extraHeaders) Object.assign(reqHeaders, extraHeaders);
+        const proxyRes = await new Client({ persistentConnection: false, timeout: 20 }).get(proxyUrl, reqHeaders);
+        if (proxyRes && proxyRes.statusCode >= 200 && proxyRes.statusCode < 300 && proxyRes.body) {
+          return proxyRes.body;
+        }
+      } catch (_) {}
+    }
+
     const headers = this._requestHeaders(url, extraHeaders);
-    const transports = [{ name: "RHTTP", options: { persistentConnection: false, noProxy: true, timeout: 25, connectTimeout: 10 } }, { name: "DART", options: { useDartHttpClient: true, persistentConnection: false } }];
+    const transports = [{ name: "RHTTP", options: { persistentConnection: false, timeout: 25, connectTimeout: 10 } }, { name: "DART", options: { useDartHttpClient: true, persistentConnection: false } }];
     const diagnostics = [];
     for (const transport of transports) {
       try {
@@ -276,7 +292,7 @@ class DefaultExtension extends MProvider {
 
   async _getText(url, extraHeaders, stage) { return await this._requestText("GET", url, extraHeaders, undefined, stage); }
   async _getJson(url, stage) { const body = await this._getText(url, { "Accept": "application/json" }, stage); try { return JSON.parse(body); } catch (_) { throw new Error("toki 만화 " + stage + " 응답 형식이 올바르지 않습니다."); } }
-  async _getJsonFast(url, stage) { let response; try { response = await new Client({ persistentConnection: false, noProxy: true, timeout: 8, connectTimeout: 4 }).get(url, this._requestHeaders(url, { "Accept": "application/json" })); } catch (error) { throw new Error("toki 만화 " + stage + " 연결 실패: " + this._failureCode(null, error)); } if (!response || response.statusCode < 200 || response.statusCode >= 300) throw new Error("toki 만화 " + stage + " 연결 실패: " + this._failureCode(response, null)); try { return JSON.parse(this._text(response.body)); } catch (_) { throw new Error("toki 만화 " + stage + " 응답 형식이 올바르지 않습니다."); } }
+  async _getJsonFast(url, stage) { let response; try { response = await new Client({ persistentConnection: false, timeout: 8, connectTimeout: 4 }).get(url, this._requestHeaders(url, { "Accept": "application/json" })); } catch (error) { throw new Error("toki 만화 " + stage + " 연결 실패: " + this._failureCode(null, error)); } if (!response || response.statusCode < 200 || response.statusCode >= 300) throw new Error("toki 만화 " + stage + " 연결 실패: " + this._failureCode(response, null)); try { return JSON.parse(this._text(response.body)); } catch (_) { throw new Error("toki 만화 " + stage + " 응답 형식이 올바르지 않습니다."); } }
   _withQuery(base, path, pairs) { const query = []; for (const pair of pairs) if (pair && pair.length > 1 && this._text(pair[1]) !== "") query.push(encodeURIComponent(pair[0]) + "=" + encodeURIComponent(this._text(pair[1]))); return this._trimSlash(base) + path + (query.length ? "?" + query.join("&") : ""); }
 
   _defaultPopularRule() { return { section: "ongoing", genre: "", order: "hot" }; }
@@ -569,7 +585,7 @@ class DefaultExtension extends MProvider {
     const cacheKey = "total_toki_manga_status_cache_v1", timeKey = cacheKey + "_time";
     let cached = this._preferenceString(cacheKey, "");
     try {
-      const response = await new Client({ persistentConnection: false, noProxy: true, timeout: 8, connectTimeout: 5 }).get(this.statusUrl + "?status=" + Date.now(), { Accept: "application/json", "Cache-Control": "no-cache" });
+      const response = await new Client({ persistentConnection: false, timeout: 8, connectTimeout: 5 }).get(this.statusUrl + "?status=" + Date.now(), { Accept: "application/json", "Cache-Control": "no-cache" });
       if (response && response.statusCode >= 200 && response.statusCode < 300) {
         const data = JSON.parse(this._text(response.body));
         preferences.setString(cacheKey, JSON.stringify(data)); preferences.setString(timeKey, String(Date.now()));

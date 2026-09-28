@@ -77,7 +77,7 @@ async function dcOfficialListCardSystem(scope, tab, defaultName) {
   const manifestUrl = assetBaseUrl + "/assets/official-random-cards.json";
   let data = null;
   try {
-    const response = await new Client({ persistentConnection: false, noProxy: true, timeout: 8, connectTimeout: 5 }).get(
+    const response = await new Client({ persistentConnection: false, timeout: 8, connectTimeout: 5 }).get(
       manifestUrl + "?card_manifest=" + Date.now(),
       { Accept: "application/json, text/plain, */*", Referer: assetBaseUrl + "/", "Cache-Control": "no-cache" }
     );
@@ -130,7 +130,7 @@ async function dcOfficialListCardSystem(scope, tab, defaultName) {
 async function dcOfficialEventCard() {
   const manifestUrl = "https://dc-toki-mangayomi-media.pages.dev/assets/official-event-card.json";
   try {
-    const response = await new Client({ persistentConnection: false, noProxy: true, timeout: 8, connectTimeout: 5 }).get(
+    const response = await new Client({ persistentConnection: false, timeout: 8, connectTimeout: 5 }).get(
       manifestUrl + "?event_manifest=" + Date.now(),
       { Accept: "application/json, text/plain, */*", Referer: "https://dc-toki-mangayomi-media.pages.dev/" }
     );
@@ -274,7 +274,7 @@ class DefaultExtension extends MProvider {
 
   async requestResponse(url, referer, stage, extraHeaders) {
     const transports = [
-      { name: "RHTTP", options: { persistentConnection: false, noProxy: true, timeout: 25, connectTimeout: 8, followRedirects: false, maxRedirects: 0 } },
+      { name: "RHTTP", options: { persistentConnection: false, timeout: 25, connectTimeout: 8, followRedirects: false, maxRedirects: 0 } },
       { name: "DART", options: { useDartHttpClient: true, persistentConnection: false, followRedirects: false, maxRedirects: 0 } }
     ];
     const diagnostics = [];
@@ -482,7 +482,7 @@ class DefaultExtension extends MProvider {
     const apiKey = (html.match(/"INNERTUBE_API_KEY":"([^"]+)"/) || [])[1];
     if (!videoId || !apiKey) return "";
     const payload = JSON.stringify({ context: { client: { clientName: "ANDROID", clientVersion: "20.10.38", androidSdkVersion: 35, hl: "ko", gl: "KR" } }, videoId, contentCheckOk: true, racyCheckOk: true });
-    const response = await new Client({ persistentConnection: false, noProxy: true, timeout: 20, connectTimeout: 8 }).post("https://www.youtube.com/youtubei/v1/player?key=" + encodeURIComponent(apiKey), { "User-Agent": this.userAgent, "Referer": "https://www.youtube.com/", "Content-Type": "application/json; charset=utf-8", "Accept": "application/json" }, payload);
+    const response = await new Client({ persistentConnection: false, timeout: 20, connectTimeout: 8 }).post("https://www.youtube.com/youtubei/v1/player?key=" + encodeURIComponent(apiKey), { "User-Agent": this.userAgent, "Referer": "https://www.youtube.com/", "Content-Type": "application/json; charset=utf-8", "Accept": "application/json" }, payload);
     if (response.statusCode < 200 || response.statusCode >= 300) return "";
     const data = JSON.parse(this.text(response.body));
     return data.streamingData ? this.text(data.streamingData.hlsManifestUrl).trim() : "";

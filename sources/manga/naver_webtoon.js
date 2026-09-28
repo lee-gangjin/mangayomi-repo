@@ -75,7 +75,7 @@ async function dcOfficialListCardSystem(scope, tab, defaultName) {
   const manifestUrl = assetBaseUrl + "/assets/official-random-cards.json";
   let data = null;
   try {
-    const response = await new Client({ persistentConnection: false, noProxy: true, timeout: 8, connectTimeout: 5 }).get(
+    const response = await new Client({ persistentConnection: false, timeout: 8, connectTimeout: 5 }).get(
       manifestUrl + "?card_manifest=" + Date.now(),
       { Accept: "application/json, text/plain, */*", Referer: assetBaseUrl + "/", "Cache-Control": "no-cache" }
     );
@@ -163,7 +163,7 @@ class DefaultExtension extends MProvider {
     if (!data) {
       try {
         const direct = this._driveDirect(source, false);
-        const response = await new Client({ persistentConnection: false, noProxy: true, timeout: 15, connectTimeout: 8 }).get(
+        const response = await new Client({ persistentConnection: false, timeout: 15, connectTimeout: 8 }).get(
           direct + (direct.indexOf("?") >= 0 ? "&" : "?") + "card_json=" + Date.now(),
           { Accept: "application/json", "Cache-Control": "no-cache" }
         );
@@ -186,7 +186,7 @@ class DefaultExtension extends MProvider {
   async _response(url, accept) {
     let last = null;
     const headers = { "User-Agent": this.userAgent, Accept: accept || "application/json, text/plain, */*", Referer: this.baseUrl + "/" };
-    for (const options of [{ persistentConnection: false, noProxy: true, timeout: 20, connectTimeout: 10 }, { useDartHttpClient: true, persistentConnection: false }]) {
+    for (const options of [{ persistentConnection: false, timeout: 20, connectTimeout: 10 }, { useDartHttpClient: true, persistentConnection: false }]) {
       try {
         const response = await new Client(options).get(url, headers);
         if (response && response.statusCode >= 200 && response.statusCode < 300) return response;

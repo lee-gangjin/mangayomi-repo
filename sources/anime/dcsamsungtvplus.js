@@ -77,7 +77,7 @@ async function dcOfficialListCardSystem(scope, tab, defaultName) {
   const manifestUrl = assetBaseUrl + "/assets/official-random-cards.json";
   let data = null;
   try {
-    const response = await new Client({ persistentConnection: false, noProxy: true, timeout: 8, connectTimeout: 5 }).get(
+    const response = await new Client({ persistentConnection: false, timeout: 8, connectTimeout: 5 }).get(
       manifestUrl + "?card_manifest=" + Date.now(),
       { Accept: "application/json, text/plain, */*", Referer: assetBaseUrl + "/", "Cache-Control": "no-cache" }
     );
@@ -130,7 +130,7 @@ async function dcOfficialListCardSystem(scope, tab, defaultName) {
 async function dcOfficialEventCard() {
   const manifestUrl = "https://dc-toki-mangayomi-media.pages.dev/assets/official-event-card.json";
   try {
-    const response = await new Client({ persistentConnection: false, noProxy: true, timeout: 8, connectTimeout: 5 }).get(
+    const response = await new Client({ persistentConnection: false, timeout: 8, connectTimeout: 5 }).get(
       manifestUrl + "?event_manifest=" + Date.now(),
       { Accept: "application/json, text/plain, */*", Referer: "https://dc-toki-mangayomi-media.pages.dev/" }
     );
@@ -236,7 +236,7 @@ class DefaultExtension extends MProvider {
     const cachedAt = Number(this.preferenceString(timeKey, "0"));
     if (cached && cachedAt > 0 && Date.now() - cachedAt < 5 * 60 * 1000) { try { data = JSON.parse(cached); } catch (_) {} }
     if (!data) { try {
-      const direct = this.driveDirect(source, false), response = await new Client({ persistentConnection: false, noProxy: true, timeout: 12, connectTimeout: 6 }).get(direct + (direct.indexOf("?") >= 0 ? "&" : "?") + "card_json=" + Date.now(), { ...this.getHeaders(direct), "Cache-Control": "no-cache", "Accept": "application/json" });
+      const direct = this.driveDirect(source, false), response = await new Client({ persistentConnection: false, timeout: 12, connectTimeout: 6 }).get(direct + (direct.indexOf("?") >= 0 ? "&" : "?") + "card_json=" + Date.now(), { ...this.getHeaders(direct), "Cache-Control": "no-cache", "Accept": "application/json" });
       if (response.statusCode < 200 || response.statusCode >= 300) throw new Error("HTTP" + response.statusCode);
       data = JSON.parse(response.body); preferences.setString(cacheKey, JSON.stringify(data)); preferences.setString(sourceKey, source); preferences.setString(timeKey, String(Date.now()));
     } catch (_) { if (cached) { try { data = JSON.parse(cached); } catch (_) {} } } }
