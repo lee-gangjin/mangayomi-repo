@@ -19,7 +19,16 @@
     "appMinVerReq": "0.9.2",
     "additionalParams": "",
     "sourceCodeLanguage": 1,
-    "notes": "통신사 SNI 차단 우회 (WARP 프록시 릴레이) · noProxy 강제 제거 · NewXtoon DOM 리뉴얼 대응 · 초고속 직결 뷰어 이미지 추출 (0.3s)"
+    "notes": "통신사 SNI 차단 우회 (WARP 프록시 릴레이) · noProxy 강제 제거 · NewXtoon DOM 리뉴얼 대응 · 초고속 직결 뷰어 이미지 추출 (0.3s)",
+    "versionLast": "0.1.11",
+    "isActive": true,
+    "isAdded": false,
+    "isPinned": false,
+    "lastUsed": false,
+    "sourceCode": "",
+    "headers": "",
+    "isLocal": false,
+    "isObsolete": false
   },
   {
     "name": "11toon 만화",
@@ -41,7 +50,16 @@
     "appMinVerReq": "0.9.2",
     "additionalParams": "",
     "sourceCodeLanguage": 1,
-    "notes": "인기 기본: 매일 추천 100 · 최신 기본: 요청 Zip · 빠른 기본 미러 우선 · 필터 규칙 저장 지원"
+    "notes": "인기 기본: 매일 추천 100 · 최신 기본: 요청 Zip · 빠른 기본 미러 우선 · 필터 규칙 저장 지원",
+    "versionLast": "0.1.12",
+    "isActive": true,
+    "isAdded": false,
+    "isPinned": false,
+    "lastUsed": false,
+    "sourceCode": "",
+    "headers": "",
+    "isLocal": false,
+    "isObsolete": false
   },
   {
     "name": "굿툰",
@@ -63,7 +81,16 @@
     "appMinVerReq": "0.9.2",
     "additionalParams": "",
     "sourceCodeLanguage": 1,
-    "notes": "기본 설정 · 인기탭: 연재 + 일반웹툰 + 오늘 요일 · 최신탭: 완결 + 전체 조건"
+    "notes": "기본 설정 · 인기탭: 연재 + 일반웹툰 + 오늘 요일 · 최신탭: 완결 + 전체 조건",
+    "versionLast": "0.1.9",
+    "isActive": true,
+    "isAdded": false,
+    "isPinned": false,
+    "lastUsed": false,
+    "sourceCode": "",
+    "headers": "",
+    "isLocal": false,
+    "isObsolete": false
   },
   {
     "name": "블랙툰",
@@ -85,7 +112,16 @@
     "appMinVerReq": "0.9.2",
     "additionalParams": "",
     "sourceCodeLanguage": 1,
-    "notes": "인기탭: 일간 BEST + 일반웹툰 · 필터 탭 방식 선택 · 중앙신호등 마지막 정상 주소 보존"
+    "notes": "인기탭: 일간 BEST + 일반웹툰 · 필터 탭 방식 선택 · 중앙신호등 마지막 정상 주소 보존",
+    "versionLast": "0.1.13",
+    "isActive": true,
+    "isAdded": false,
+    "isPinned": false,
+    "lastUsed": false,
+    "sourceCode": "",
+    "headers": "",
+    "isLocal": false,
+    "isObsolete": false
   },
   {
     "name": "늑대 만화",
@@ -107,7 +143,16 @@
     "appMinVerReq": "0.9.2",
     "additionalParams": "",
     "sourceCodeLanguage": 1,
-    "notes": "기본 설정 · 인기탭: 전체 장르 + 인기순 · 최신탭: 전체 장르 + 최신순 · 필터 규칙 저장 지원"
+    "notes": "기본 설정 · 인기탭: 전체 장르 + 인기순 · 최신탭: 전체 장르 + 최신순 · 필터 규칙 저장 지원",
+    "versionLast": "0.1.7",
+    "isActive": true,
+    "isAdded": false,
+    "isPinned": false,
+    "lastUsed": false,
+    "sourceCode": "",
+    "headers": "",
+    "isLocal": false,
+    "isObsolete": false
   },
   {
     "name": "늑대 웹툰",
@@ -129,7 +174,16 @@
     "appMinVerReq": "0.9.2",
     "additionalParams": "",
     "sourceCodeLanguage": 1,
-    "notes": "기본 설정 · 인기탭: 연재 + 일반 + 인기순 · 최신탭: 신작순 · 필터 규칙 저장 지원"
+    "notes": "기본 설정 · 인기탭: 연재 + 일반 + 인기순 · 최신탭: 신작순 · 필터 규칙 저장 지원",
+    "versionLast": "0.1.6",
+    "isActive": true,
+    "isAdded": false,
+    "isPinned": false,
+    "lastUsed": false,
+    "sourceCode": "",
+    "headers": "",
+    "isLocal": false,
+    "isObsolete": false
   },
   {
     "name": "TOTAL 토끼 만화",
@@ -151,7 +205,16 @@
     "appMinVerReq": "0.9.2",
     "additionalParams": "",
     "sourceCodeLanguage": 1,
-    "notes": "기본 내부 WebView · 외부인증 서버 선택 사용 · 중앙신호등/NAS 상태 기반 자동 선택"
+    "notes": "기본 내부 WebView · 외부인증 서버 선택 사용 · 중앙신호등/NAS 상태 기반 자동 선택",
+    "versionLast": "0.1.13",
+    "isActive": true,
+    "isAdded": false,
+    "isPinned": false,
+    "lastUsed": false,
+    "sourceCode": "",
+    "headers": "",
+    "isLocal": false,
+    "isObsolete": false
   },
   {
     "name": "네이버 웹툰",
@@ -173,6 +236,15 @@
     "appMinVerReq": "0.9.2",
     "additionalParams": "",
     "sourceCodeLanguage": 1,
-    "notes": "인기: 오늘의 추천 웹툰 · 요일 인기순 · 최신: 오늘 업데이트순"
+    "notes": "인기: 오늘의 추천 웹툰 · 요일 인기순 · 최신: 오늘 업데이트순",
+    "versionLast": "0.1.1",
+    "isActive": true,
+    "isAdded": false,
+    "isPinned": false,
+    "lastUsed": false,
+    "sourceCode": "",
+    "headers": "",
+    "isLocal": false,
+    "isObsolete": false
   }
 ]
