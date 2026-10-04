@@ -1,10 +1,10 @@
 ﻿{
-  "name": "mangayomi-repo",
-  "version": "1.0.1",
-  "description": "Custom Mangayomi extension repository for Korean sources",
-  "scripts": {
-    "build": "node build.js"
-  },
-  "author": "lee-gangjin",
-  "license": "MIT"
+    "name":  "mangayomi-repo",
+    "version":  "1.0.2",
+    "description":  "Custom Mangayomi extension repository for Korean sources",
+    "scripts":  {
+                    "build":  "node build.js"
+                },
+    "author":  "lee-gangjin",
+    "license":  "MIT"
 }
